@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
-"""news-image-20261126 V1: one image summing up Thursday 26 November 2026.
+"""news-image-20261126 V2: one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
 
 Design (authored fresh for this edition): dark navy broadsheet, cream
-masthead, lead = Thursday's Asia markets rout with a bar chart, rail =
-London Tube strike, four features (Kim / Macy's parade / nor'easter /
-EU summit), three-column wire of 31 briefs, footer with the make.fun ref.
-Own 5x7 pixel typeface as data; own PNG writer.
+masthead, lead = Thursday's Asia markets rout with a bar chart plus a
+skyline strip, rail = London Tube strike, four features (Kim / Macy's
+parade / nor'easter / EU summit), three-column wire of 31 briefs,
+footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
+writer.
+
+V2 changes (see work/v2/AUDIT-V2.md; every change measured first):
+- V1 glyphs KEPT: redrawn glyphs scored 74% vs 86% baseline on the
+  OCR sheet, tracking 70%, bold 74% — all falsified, none shipped.
+- Wire pitch 30 -> 34, fact dy 15 -> 17 (measured +5pts clean OCR:
+  3-col sheet 36% -> 41%). "THE WIRE" header dropped to fund the
+  vertical budget; hairline divider instead.
+- Features 150 -> 142px, scenes re-derived for a 40px box, bolder.
+- Chart panel: bars spacing 34 -> 32, skyline strip at the bottom,
+  duplicated "US MARKETS CLOSED TODAY" line removed (wire #20 has it).
 """
 
 import os
@@ -295,49 +306,52 @@ WIRE = [
 
 # ---------------------------------------------------------------- scenes
 def scene_missile(im, x, y, w, h):
+    # h = 40 box. Thicker body than V1 (16 wide).
     cx = x + w // 2
-    im.rect(cx - 7, y + 18, 14, h - 40, CREAM)
-    im.tri(cx - 7, y + 18, cx + 7, y + 18, cx, y + 2, CREAM)
-    im.tri(cx - 7, y + h - 26, cx - 20, y + h - 12, cx - 7, y + h - 14, RED)
-    im.tri(cx + 7, y + h - 26, cx + 20, y + h - 12, cx + 7, y + h - 14, RED)
-    im.tri(cx - 6, y + h - 22, cx + 6, y + h - 22, cx, y + h - 4, GOLD)
-    im.disc(cx, y + 30, 3, NAVY2)
+    im.tri(cx - 8, y + 12, cx + 8, y + 12, cx, y + 2, CREAM)
+    im.rect(cx - 8, y + 12, 16, 16, CREAM)
+    im.tri(cx - 8, y + 24, cx - 21, y + 34, cx - 8, y + 28, RED)
+    im.tri(cx + 8, y + 24, cx + 21, y + 34, cx + 8, y + 28, RED)
+    im.tri(cx - 6, y + 28, cx + 6, y + 28, cx, y + 38, GOLD)
+    im.disc(cx, y + 18, 3, NAVY2)
 
 
 def scene_balloon(im, x, y, w, h):
+    # h = 40 box. Bigger envelope than V1 (r 15 in a 40px box).
     cx = x + w // 2
-    im.disc(cx, y + 20, 18, RED)
-    im.disc(cx - 6, y + 17, 6, (255, 120, 120))
-    im.line(cx - 5, y + 36, cx - 3, y + 40, CREAM)
-    im.line(cx + 5, y + 36, cx + 3, y + 40, CREAM)
-    im.rect(cx - 6, y + 40, 12, 7, GOLD)
-    im.disc(x + 18, y + 6, 8, GREY)
-    im.disc(x + 34, y + 3, 9, GREY)
-    im.disc(x + w - 20, y + 8, 7, GREY)
+    im.disc(cx, y + 16, 15, RED)
+    im.disc(cx - 5, y + 13, 5, (255, 120, 120))
+    im.line(cx - 5, y + 29, cx - 3, y + 32, CREAM)
+    im.line(cx + 5, y + 29, cx + 3, y + 32, CREAM)
+    im.rect(cx - 6, y + 32, 12, 6, GOLD)
+    im.disc(x + 16, y + 5, 6, GREY)
+    im.disc(x + w - 18, y + 7, 6, GREY)
 
 
 def scene_storm(im, x, y, w, h):
+    # h = 40 box. Cloud + lightning + rain, all inside the box.
     cx = x + w // 2
-    im.disc(cx - 12, y + 14, 12, GREY)
-    im.disc(cx + 5, y + 10, 14, GREY)
-    im.disc(cx + 19, y + 17, 9, GREY)
-    im.rect(cx - 26, y + 20, 52, 6, GREY)
-    im.line(cx + 2, y + 28, cx - 6, y + 38, GOLD)
-    im.line(cx - 6, y + 38, cx + 2, y + 38, GOLD)
-    im.line(cx + 2, y + 38, cx - 6, y + 46, GOLD)
-    for dx in (-20, -8, 8, 20):
-        im.vline(cx + dx, y + 30, 10, BLUE)
+    im.disc(cx - 10, y + 12, 10, GREY)
+    im.disc(cx + 6, y + 9, 11, GREY)
+    im.disc(cx + 16, y + 14, 8, GREY)
+    im.rect(cx - 22, y + 17, 44, 5, GREY)
+    im.line(cx + 2, y + 24, cx - 5, y + 31, GOLD)
+    im.line(cx - 5, y + 31, cx + 2, y + 31, GOLD)
+    im.line(cx + 2, y + 31, cx - 5, y + 38, GOLD)
+    for dx in (-18, -6, 6, 18):
+        im.vline(cx + dx, y + 26, 8, BLUE)
 
 
 def scene_stars(im, x, y, w, h):
     import math
-    cx, cy = x + w // 2, y + h // 2 - 4
-    r = 26
+    cx, cy = x + w // 2, y + 20
+    r = 17
     for k in range(12):
         a = math.pi * 2 * k / 12 - math.pi / 2
         sx = int(cx + r * math.cos(a))
         sy = int(cy + r * math.sin(a))
-        im.disc(sx, sy, 3, GOLD)
+        im.disc(sx, sy, 2, GOLD)
+    im.disc(cx, cy, 2, GOLD)
 
 
 SCENES = {"MISSILE": scene_missile, "BALLOON": scene_balloon,
@@ -381,23 +395,38 @@ def build():
         im.rect(bar_x, by + 2, bar_w, 10, col)
         vtxt = ("+%.1f%%" % val) if val > 0 else ("%.1f%%" % val)
         im.text(bar_x + bar_w + 6, by, vtxt, CREAM, 2)
-        by += 34
-    im.text(px + 12, by + 4, "US MARKETS CLOSED TODAY", CREAM_DIM, 2)
+        by += 32
+    # Skyline strip along the panel bottom: trading-city silhouette
+    # with red down-arrows (the "US MARKETS CLOSED" line moved out —
+    # wire #20 carries it). Panel bottom edge is y=384.
+    base = 382
+    sky = [(12, 20), (36, 12), (58, 22), (84, 14), (106, 20), (130, 10),
+           (152, 18), (176, 12), (198, 22), (224, 14), (246, 20),
+           (270, 12), (292, 18), (314, 10)]
+    for bx, bh in sky:
+        im.rect(px + bx, base - bh, 20, bh, (10, 20, 36))
+        im.rect(px + bx + 8, base - bh - 4, 4, 4, (10, 20, 36))
+    for wx in (20, 66, 112, 160, 206, 252, 300):
+        im.rect(px + wx, base - 8, 2, 3, GOLD)
+    for ax in (46, 140, 234):
+        im.tri(px + ax, base - 30, px + ax + 8, base - 30,
+               px + ax + 4, base - 22, RED)
 
     # Rail: Tube strike.
     im.rect(0, 396, W, 64, RED_DK)
     im.text(16, 408, RAIL_HEAD, CREAM, 3)
     im.text(16, 434, RAIL_BODY, CREAM, 2)
 
-    # Features.
+    # Features. Height 142 (was 150): funds the pitch-34 wire below.
+    # Scene box 40px; headline at +64; body up to 3 lines ends +139.
     fx0, fw, gap = 16, 238, 8
     for i, (scene, kick, head, body) in enumerate(FEATURES):
         fx = fx0 + i * (fw + gap)
-        fy = 476
-        im.rect(fx, fy, fw, 150, NAVY2)
+        fy = 474
+        im.rect(fx, fy, fw, 142, NAVY2)
         im.text(fx + 8, fy + 6, kick, GOLD, 2)
-        SCENES[scene](im, fx, fy + 20, fw, 48)
-        ty = fy + 72
+        SCENES[scene](im, fx, fy + 20, fw, 40)
+        ty = fy + 64
         for ln in wrap(head, 19):
             im.text(fx + 8, ty, ln, CREAM, 2)
             ty += 15
@@ -405,15 +434,15 @@ def build():
             im.text(fx + 8, ty, ln, CREAM_DIM, 2)
             ty += 15
         if i < 3:
-            im.vline(fx + fw + gap // 2, fy + 8, 134, GREY)
+            im.vline(fx + fw + gap // 2, fy + 8, 126, GREY)
 
-    # Wire header.
-    im.text(16, 640, "THE WIRE", GOLD, 2)
-    im.hline(120, 647, W - 136, GREY)
+    # Wire divider (the "THE WIRE" header text was dropped to fund the
+    # pitch-34 rows; the chips mark the wire). Rows start 622.
+    im.hline(0, 617, W, GREY)
 
-    # Wire: 3 columns, 11 / 10 / 10 rows. Lines are capped at 25 chars
-    # (column text width) - assert so a long line can never overflow
-    # into the next column again.
+    # Wire: 3 columns, 11 / 10 / 10 rows, pitch 34, fact at +17.
+    # Lines are capped at 25 chars (column text width) - assert so a
+    # long line can never overflow into the next column again.
     for beat, head, fact in WIRE:
         assert len(head) <= 25, head
         assert len(fact) <= 25, fact
@@ -421,16 +450,16 @@ def build():
     cw = (W - 32 - 2 * 12) // 3
     for ci, col in enumerate(cols):
         cx = 16 + ci * (cw + 12)
-        ry = 664
+        ry = 622
         for beat, head, fact in col:
             im.rect(cx, ry + 3, 8, 8, CHIP[beat])
             im.text(cx + 14, ry, head, CREAM, 2)
-            im.text(cx + 14, ry + 15, fact, CREAM_DIM, 2)
-            ry += 30
+            im.text(cx + 14, ry + 17, fact, CREAM_DIM, 2)
+            ry += 34
 
     # Footer.
-    im.hline(0, 996, W, GREY)
-    im.text_c(0, 1004, W, "THE WORLD'S NEWS - MAKE.FUN/?ref=nnk13219", GOLD, 2)
+    im.hline(0, 998, W, GREY)
+    im.text_c(0, 1006, W, "THE WORLD'S NEWS - MAKE.FUN/?ref=nnk13219", GOLD, 2)
 
     return im
 
