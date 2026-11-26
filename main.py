@@ -1,8 +1,23 @@
-"""news-image-20261126 V6: one image summing up Thursday 26 November 2026.
+#!/usr/bin/env python3
+"""news-image-20261126 V8 (visual/structural: lead 6th line, taller skyline,
+bigger scenes, centred masthead, rail roundel, full dividers): one image
+summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
+
+V8 changes (see work/v8/AUDIT-V8.md and work/v8/FACTCHECK-V8.md): the
+lead body gains a verified 6th line (Nikkei open 261 lower at 58,383,
+STORIES #16), filling the 31px dead strip; the skyline grows +14px to
+close the chart dead band with the red arrows re-anchored above the new
+rooflines; all four feature scenes grow inside their 52px box; the
+masthead title is vertically centred in its band (y18 -> y25); a Tube
+roundel fills the rail head row's empty right end; feature dividers run
+the full box height. No rail/feature/wire row moves; no wire text, no
+palette change. Evening sweep: nothing had landed at build time
+(~14:30 WIB) — BoE report due 17:30 WIB, Europa League and NFL
+overnight, EU Council Friday.
 
 Design (authored fresh for this edition): dark navy broadsheet, cream
 masthead, lead = Thursday's Asia markets rout with a bar chart plus a
@@ -11,30 +26,20 @@ parade / nor'easter / EU summit), three-column wire of 31 briefs,
 footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
 writer.
 
-V6 changes (see work/v6/AUDIT-V6.md and work/v6/FACTCHECK-V6.md):
-- BOLD WIRE GLYPHS: wire text is double-struck (+1px to the right,
-  scale >= 2). First real typeface win in the edition: wire sheets
-  85% -> 91% bold, 92% bold+wide; full page 45% -> 52% wire-only
-  bold, 55% with the feature row. The WIDE 6-column glyphs were
-  also sheet-tested (87% alone) but REJECTED: only +4 words over
-  bold and they break the column grid (3 wire lines and all wrapped
-  feature heads overflow).
-- FEATURE ROW REBALANCE (V5's rejected F1, re-tested on top of bold):
-  scene box 40 -> 52px with art scaled up, single-line heads
-  (KIM SPREADS NUKES / MACY'S PARADE MOVED / STORM HITS 250M /
-  EU MEETS ON UKRAINE), storm body gains verified third line
-  "HEAVY RAIN, WIND" (STORIES.md #28), Macy's body keeps the
-  Saturday fact ("POSTPONED BY STORM" / "MOVED TO SAT"). No more
-  orphaned headline lines, no more storm dead space.
-- The 300px-wire proxy reads 9/254 (4%) vs V5's 16/254 (6%) — but
-  today's isolation proves that number moves +/-5 words when the
-  wire pixels are BYTE-IDENTICAL (non-wire bold: 11; V5 features-
-  only: 10), so it is segmentation noise in the 9-16 band, not a
-  legibility regression. Full-size wire-all 55% is the real signal,
-  confirmed by the sheet test and by two independent page variants.
-- Everything else UNCHANGED: glyphs (except bold wire), masthead,
-  date, lead, rail, wire text, palette. No evening sweep items:
-  nothing had landed at build time (~13:00 WIB).
+V5 changes (see work/v5/AUDIT-V5.md and work/v5/FACTCHECK-V5.md):
+- Skyline ONLY: buildings brighter (32,58,92) -> (48,80,120) and
+  taller (+8px), windows 2x3 -> 3x3, red down-arrows 8 -> 12 wide.
+  The V3 skyline was nearly invisible; the V5 strip reads as a city
+  silhouette. All measured gates tie V3 (full wire 114/254, 300px
+  wire 16/254, 300px large 8/28 — the one-word large delta is the
+  apostrophe "S" token, whose pixels are byte-identical).
+- Feature-row rebalance (bigger scenes, single-line heads, storm
+  third line) was built, measured, and REJECTED: full-size wire
+  +3 words but 300px wire -5 words (15 -> 10) — a real regression
+  on a tracked gate. See work/v5/FACTCHECK-V5.md; V6 may split it
+  (heads-only vs scenes-only).
+- Glyphs, masthead, date, lead, rail, wire UNCHANGED. No evening
+  sweep items: nothing had landed at build time (~11:30 WIB).
 """
 
 import os
@@ -268,7 +273,8 @@ LEAD_HEAD = "ASIA SINKS AGAIN"
 LEAD_SUB = "TARIFF FEARS AND AI DOUBTS SEND MARKETS DOWN FOR A SECOND DAY"
 LEAD_BODY = ("KOSPI OPENS 3.94% LOWER AND FALLS 4.6% AS THE EXCHANGE "
              "TRIPS A SIDECAR. SAMSUNG -6.7%, SK HYNIX -6.6%. NIKKEI "
-             "-2.4%, TAIEX -4.5%. ONLY HONG KONG RISES, +0.8%.")
+             "-2.4%, TAIEX -4.5%. ONLY HONG KONG RISES, +0.8%. "
+             "NIKKEI'S OPEN: 261 LOWER AT 58,383.")
 BARS = [("KOSPI", -4.6, RED), ("NIKKEI", -2.4, RED), ("TAIEX", -4.5, RED),
         ("HANG SENG", +0.8, GREEN), ("SHANGHAI", -0.7, RED)]
 
@@ -331,22 +337,22 @@ WIRE = [
 def scene_missile(im, x, y, w, h):
     # h = 52 box. Wider body (20) and longer flame than V3.
     cx = x + w // 2
-    im.tri(cx - 10, y + 14, cx + 10, y + 14, cx, y + 2, CREAM)
-    im.rect(cx - 10, y + 14, 20, 20, CREAM)
-    im.tri(cx - 10, y + 26, cx - 26, y + 40, cx - 10, y + 32, RED)
-    im.tri(cx + 10, y + 26, cx + 26, y + 40, cx + 10, y + 32, RED)
-    im.tri(cx - 7, y + 34, cx + 7, y + 34, cx, y + 48, GOLD)
-    im.disc(cx, y + 22, 4, NAVY2)
+    im.tri(cx - 13, y + 14, cx + 13, y + 14, cx, y + 2, CREAM)
+    im.rect(cx - 13, y + 14, 26, 20, CREAM)
+    im.tri(cx - 13, y + 26, cx - 32, y + 40, cx - 13, y + 32, RED)
+    im.tri(cx + 13, y + 26, cx + 32, y + 40, cx + 13, y + 32, RED)
+    im.tri(cx - 8, y + 34, cx + 8, y + 34, cx, y + 50, GOLD)
+    im.disc(cx, y + 22, 5, NAVY2)
 
 
 def scene_balloon(im, x, y, w, h):
     # h = 52 box. Envelope r19 (was r15 in a 40px box).
     cx = x + w // 2
-    im.disc(cx, y + 20, 19, RED)
-    im.disc(cx - 7, y + 16, 6, (255, 120, 120))
-    im.line(cx - 6, y + 37, cx - 4, y + 41, CREAM)
-    im.line(cx + 6, y + 37, cx + 4, y + 41, CREAM)
-    im.rect(cx - 7, y + 41, 14, 7, GOLD)
+    im.disc(cx, y + 20, 22, RED)
+    im.disc(cx - 8, y + 15, 7, (255, 120, 120))
+    im.line(cx - 6, y + 42, cx - 4, y + 45, CREAM)
+    im.line(cx + 6, y + 42, cx + 4, y + 45, CREAM)
+    im.rect(cx - 8, y + 45, 16, 7, GOLD)
     im.disc(x + 16, y + 6, 7, GREY)
     im.disc(x + w - 18, y + 8, 7, GREY)
 
@@ -354,27 +360,27 @@ def scene_balloon(im, x, y, w, h):
 def scene_storm(im, x, y, w, h):
     # h = 52 box. Bigger cloud, longer lightning, lower rain.
     cx = x + w // 2
-    im.disc(cx - 12, y + 14, 12, GREY)
-    im.disc(cx + 8, y + 10, 13, GREY)
-    im.disc(cx + 19, y + 16, 9, GREY)
-    im.rect(cx - 26, y + 20, 52, 6, GREY)
-    im.line(cx + 2, y + 28, cx - 6, y + 36, GOLD)
-    im.line(cx - 6, y + 36, cx + 2, y + 36, GOLD)
-    im.line(cx + 2, y + 36, cx - 6, y + 46, GOLD)
-    for dx in (-22, -8, 8, 22):
-        im.vline(cx + dx, y + 34, 10, BLUE)
+    im.disc(cx - 13, y + 13, 14, GREY)
+    im.disc(cx + 9, y + 9, 15, GREY)
+    im.disc(cx + 21, y + 15, 10, GREY)
+    im.rect(cx - 29, y + 19, 58, 7, GREY)
+    im.line(cx + 2, y + 27, cx - 7, y + 36, GOLD)
+    im.line(cx - 7, y + 36, cx + 3, y + 36, GOLD)
+    im.line(cx + 3, y + 36, cx - 7, y + 48, GOLD)
+    for dx in (-26, -9, 9, 26):
+        im.vline(cx + dx, y + 33, 12, BLUE)
 
 
 def scene_stars(im, x, y, w, h):
     import math
     cx, cy = x + w // 2, y + 26
-    r = 21
+    r = 24
     for k in range(12):
         a = math.pi * 2 * k / 12 - math.pi / 2
         sx = int(cx + r * math.cos(a))
         sy = int(cy + r * math.sin(a))
-        im.disc(sx, sy, 2, GOLD)
-    im.disc(cx, cy, 2, GOLD)
+        im.disc(sx, sy, 3, GOLD)
+    im.disc(cx, cy, 3, GOLD)
 
 
 SCENES = {"MISSILE": scene_missile, "BALLOON": scene_balloon,
@@ -388,7 +394,7 @@ def build():
 
     # Masthead.
     im.rect(0, 0, W, 86, PAPER)
-    im.text_c(0, 18, W, "THE WORLD'S NEWS", INK, 5)
+    im.text_c(0, 25, W, "THE WORLD'S NEWS", INK, 5)
     im.hline(0, 86, W, RED)
     im.rect(0, 87, W, 3, GOLD)
 
@@ -443,6 +449,10 @@ def build():
     im.rect(0, 396, W, 64, RED_DK)
     im.text(16, 404, RAIL_HEAD, CREAM, 4)
     im.text(16, 436, RAIL_BODY, CREAM, 2)
+    # Tube roundel in the empty right end of the head row.
+    im.disc(988, 418, 12, CREAM)
+    im.disc(988, 418, 9, RED)
+    im.rect(976, 415, 24, 6, NAVY)
 
     # Features. Height 142 (was 150): funds the pitch-34 wire below.
     # Scene box 52px; single-line headline at +78; body up to 3 lines
@@ -466,7 +476,7 @@ def build():
             im.text(fx + 8, ty, ln, CREAM_DIM, 2)
             ty += 15
         if i < 3:
-            im.vline(fx + fw + gap // 2, fy + 8, 126, GREY)
+            im.vline(fx + fw + gap // 2, fy + 8, 134, GREY)
 
     # Wire divider with "THE WIRE" label cut into the rule at zero
     # vertical cost: a navy backing rect breaks the hairline and the
