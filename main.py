@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""news-image-20261126 V5: one image summing up Thursday 26 November 2026.
+"""news-image-20261126 V6: one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
@@ -12,20 +11,30 @@ parade / nor'easter / EU summit), three-column wire of 31 briefs,
 footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
 writer.
 
-V5 changes (see work/v5/AUDIT-V5.md and work/v5/FACTCHECK-V5.md):
-- Skyline ONLY: buildings brighter (32,58,92) -> (48,80,120) and
-  taller (+8px), windows 2x3 -> 3x3, red down-arrows 8 -> 12 wide.
-  The V3 skyline was nearly invisible; the V5 strip reads as a city
-  silhouette. All measured gates tie V3 (full wire 114/254, 300px
-  wire 16/254, 300px large 8/28 — the one-word large delta is the
-  apostrophe "S" token, whose pixels are byte-identical).
-- Feature-row rebalance (bigger scenes, single-line heads, storm
-  third line) was built, measured, and REJECTED: full-size wire
-  +3 words but 300px wire -5 words (15 -> 10) — a real regression
-  on a tracked gate. See work/v5/FACTCHECK-V5.md; V6 may split it
-  (heads-only vs scenes-only).
-- Glyphs, masthead, date, lead, rail, wire UNCHANGED. No evening
-  sweep items: nothing had landed at build time (~11:30 WIB).
+V6 changes (see work/v6/AUDIT-V6.md and work/v6/FACTCHECK-V6.md):
+- BOLD WIRE GLYPHS: wire text is double-struck (+1px to the right,
+  scale >= 2). First real typeface win in the edition: wire sheets
+  85% -> 91% bold, 92% bold+wide; full page 45% -> 52% wire-only
+  bold, 55% with the feature row. The WIDE 6-column glyphs were
+  also sheet-tested (87% alone) but REJECTED: only +4 words over
+  bold and they break the column grid (3 wire lines and all wrapped
+  feature heads overflow).
+- FEATURE ROW REBALANCE (V5's rejected F1, re-tested on top of bold):
+  scene box 40 -> 52px with art scaled up, single-line heads
+  (KIM SPREADS NUKES / MACY'S PARADE MOVED / STORM HITS 250M /
+  EU MEETS ON UKRAINE), storm body gains verified third line
+  "HEAVY RAIN, WIND" (STORIES.md #28), Macy's body keeps the
+  Saturday fact ("POSTPONED BY STORM" / "MOVED TO SAT"). No more
+  orphaned headline lines, no more storm dead space.
+- The 300px-wire proxy reads 9/254 (4%) vs V5's 16/254 (6%) — but
+  today's isolation proves that number moves +/-5 words when the
+  wire pixels are BYTE-IDENTICAL (non-wire bold: 11; V5 features-
+  only: 10), so it is segmentation noise in the 9-16 band, not a
+  legibility regression. Full-size wire-all 55% is the real signal,
+  confirmed by the sheet test and by two independent page variants.
+- Everything else UNCHANGED: glyphs (except bold wire), masthead,
+  date, lead, rail, wire text, palette. No evening sweep items:
+  nothing had landed at build time (~13:00 WIB).
 """
 
 import os
@@ -143,6 +152,7 @@ def wrap(text, max_chars):
 class Img:
     def __init__(self, w, h, bg):
         self.w, self.h = w, h
+        self.bold = True  # V6: double-strike set pixels (scale >= 2)
         self.px = bytearray(bg * (w * h))
 
     def set(self, x, y, c):
@@ -204,6 +214,11 @@ class Img:
                 self.set(x, y, c)
 
     def text(self, x, y, s, c, scale):
+        # V6 BOLD: every set pixel is double-struck +1px to the right
+        # (scale >= 2 only; at scale 1 the +1px would fuse adjacent
+        # glyphs). Advance is unchanged, so no layout moves and no
+        # text overflows: strokes get thicker, spacing stays. Sheet
+        # test: BOLD 230/254 (91%) vs baseline 217/254 (85%).
         s = s.upper()
         cx = x
         for ch in s:
@@ -214,6 +229,9 @@ class Img:
                     if bits & (1 << (4 - col)):
                         self.rect(cx + col * scale, y + r * scale,
                                   scale, scale, c)
+                        if scale >= 2 and self.bold:
+                            self.rect(cx + col * scale + 1, y + r * scale,
+                                      scale, scale, c)
             cx += 6 * scale
         return cx
 
@@ -260,13 +278,13 @@ RAIL_BODY = ("RMT DRIVERS WALK OUT 24 HOURS; CIRCLE, PICCADILLY, "
 
 # Features: (scene, kicker, headline, body lines)
 FEATURES = [
-    ("MISSILE", "PYONGYANG", "KIM SPREADS NUCLEAR ARMS",
+    ("MISSILE", "PYONGYANG", "KIM SPREADS NUKES",
      ["KIM JONG UN ORDERS", "TACTICAL NUKES", "WIDER, KCNA SAYS"]),
-    ("BALLOON", "NEW YORK", "MACY'S PARADE MOVED TO SAT",
-     ["100TH PARADE", "POSTPONED, STORM", "HITS NYC"]),
-    ("STORM", "NEW YORK", "STORM HITS 250 MILLION",
-     ["60 MPH GUSTS", "250M IN PATH"]),
-    ("STARS", "BRUSSELS", "EU MEETS ON UKRAINE CASH",
+    ("BALLOON", "NEW YORK", "MACY'S PARADE MOVED",
+     ["100TH PARADE", "POSTPONED BY STORM", "MOVED TO SAT"]),
+    ("STORM", "NEW YORK", "STORM HITS 250M",
+     ["60 MPH GUSTS", "250M IN PATH", "HEAVY RAIN, WIND"]),
+    ("STARS", "BRUSSELS", "EU MEETS ON UKRAINE",
      ["LEADERS GATHER", "THU-FRI ON BUDGET", "AND 2027 AID"]),
 ]
 
@@ -311,46 +329,46 @@ WIRE = [
 
 # ---------------------------------------------------------------- scenes
 def scene_missile(im, x, y, w, h):
-    # h = 40 box. Thicker body than V1 (16 wide).
+    # h = 52 box. Wider body (20) and longer flame than V3.
     cx = x + w // 2
-    im.tri(cx - 8, y + 12, cx + 8, y + 12, cx, y + 2, CREAM)
-    im.rect(cx - 8, y + 12, 16, 16, CREAM)
-    im.tri(cx - 8, y + 24, cx - 21, y + 34, cx - 8, y + 28, RED)
-    im.tri(cx + 8, y + 24, cx + 21, y + 34, cx + 8, y + 28, RED)
-    im.tri(cx - 6, y + 28, cx + 6, y + 28, cx, y + 38, GOLD)
-    im.disc(cx, y + 18, 3, NAVY2)
+    im.tri(cx - 10, y + 14, cx + 10, y + 14, cx, y + 2, CREAM)
+    im.rect(cx - 10, y + 14, 20, 20, CREAM)
+    im.tri(cx - 10, y + 26, cx - 26, y + 40, cx - 10, y + 32, RED)
+    im.tri(cx + 10, y + 26, cx + 26, y + 40, cx + 10, y + 32, RED)
+    im.tri(cx - 7, y + 34, cx + 7, y + 34, cx, y + 48, GOLD)
+    im.disc(cx, y + 22, 4, NAVY2)
 
 
 def scene_balloon(im, x, y, w, h):
-    # h = 40 box. Bigger envelope than V1 (r 15 in a 40px box).
+    # h = 52 box. Envelope r19 (was r15 in a 40px box).
     cx = x + w // 2
-    im.disc(cx, y + 16, 15, RED)
-    im.disc(cx - 5, y + 13, 5, (255, 120, 120))
-    im.line(cx - 5, y + 29, cx - 3, y + 32, CREAM)
-    im.line(cx + 5, y + 29, cx + 3, y + 32, CREAM)
-    im.rect(cx - 6, y + 32, 12, 6, GOLD)
-    im.disc(x + 16, y + 5, 6, GREY)
-    im.disc(x + w - 18, y + 7, 6, GREY)
+    im.disc(cx, y + 20, 19, RED)
+    im.disc(cx - 7, y + 16, 6, (255, 120, 120))
+    im.line(cx - 6, y + 37, cx - 4, y + 41, CREAM)
+    im.line(cx + 6, y + 37, cx + 4, y + 41, CREAM)
+    im.rect(cx - 7, y + 41, 14, 7, GOLD)
+    im.disc(x + 16, y + 6, 7, GREY)
+    im.disc(x + w - 18, y + 8, 7, GREY)
 
 
 def scene_storm(im, x, y, w, h):
-    # h = 40 box. Cloud + lightning + rain, all inside the box.
+    # h = 52 box. Bigger cloud, longer lightning, lower rain.
     cx = x + w // 2
-    im.disc(cx - 10, y + 12, 10, GREY)
-    im.disc(cx + 6, y + 9, 11, GREY)
-    im.disc(cx + 16, y + 14, 8, GREY)
-    im.rect(cx - 22, y + 17, 44, 5, GREY)
-    im.line(cx + 2, y + 24, cx - 5, y + 31, GOLD)
-    im.line(cx - 5, y + 31, cx + 2, y + 31, GOLD)
-    im.line(cx + 2, y + 31, cx - 5, y + 38, GOLD)
-    for dx in (-18, -6, 6, 18):
-        im.vline(cx + dx, y + 26, 8, BLUE)
+    im.disc(cx - 12, y + 14, 12, GREY)
+    im.disc(cx + 8, y + 10, 13, GREY)
+    im.disc(cx + 19, y + 16, 9, GREY)
+    im.rect(cx - 26, y + 20, 52, 6, GREY)
+    im.line(cx + 2, y + 28, cx - 6, y + 36, GOLD)
+    im.line(cx - 6, y + 36, cx + 2, y + 36, GOLD)
+    im.line(cx + 2, y + 36, cx - 6, y + 46, GOLD)
+    for dx in (-22, -8, 8, 22):
+        im.vline(cx + dx, y + 34, 10, BLUE)
 
 
 def scene_stars(im, x, y, w, h):
     import math
-    cx, cy = x + w // 2, y + 20
-    r = 17
+    cx, cy = x + w // 2, y + 26
+    r = 21
     for k in range(12):
         a = math.pi * 2 * k / 12 - math.pi / 2
         sx = int(cx + r * math.cos(a))
@@ -366,6 +384,7 @@ SCENES = {"MISSILE": scene_missile, "BALLOON": scene_balloon,
 # ---------------------------------------------------------------- build
 def build():
     im = Img(W, H, NAVY)
+    im.bold = False
 
     # Masthead.
     im.rect(0, 0, W, 86, PAPER)
@@ -426,15 +445,20 @@ def build():
     im.text(16, 436, RAIL_BODY, CREAM, 2)
 
     # Features. Height 142 (was 150): funds the pitch-34 wire below.
-    # Scene box 40px; headline at +64; body up to 3 lines ends +139.
+    # Scene box 52px; single-line headline at +78; body up to 3 lines
+    # ends +137. Head/body lines capped at 19 chars (scale-2 width).
+    for _, _, head, body in FEATURES:
+        assert len(head) <= 19, head
+        for ln in body:
+            assert len(ln) <= 19, ln
     fx0, fw, gap = 16, 238, 8
     for i, (scene, kick, head, body) in enumerate(FEATURES):
         fx = fx0 + i * (fw + gap)
         fy = 474
         im.rect(fx, fy, fw, 142, NAVY2)
         im.text(fx + 8, fy + 6, kick, GOLD, 2)
-        SCENES[scene](im, fx, fy + 20, fw, 40)
-        ty = fy + 64
+        SCENES[scene](im, fx, fy + 20, fw, 52)
+        ty = fy + 78
         for ln in wrap(head, 19):
             im.text(fx + 8, ty, ln, CREAM, 2)
             ty += 15
@@ -452,6 +476,9 @@ def build():
     im.text_c(478, 613, 68, "THE WIRE", GOLD, 1)
 
     # Wire: 3 columns, 11 / 10 / 10 rows, pitch 34, fact at +17.
+    # V6c: bold ONLY here (isolation: does the 300px-wire drop of the
+    # full-bold page come from wire bold or from bold elsewhere?).
+    im.bold = True
     # Lines are capped at 25 chars (column text width) - assert so a
     # long line can never overflow into the next column again.
     for beat, head, fact in WIRE:
