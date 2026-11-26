@@ -1,9 +1,26 @@
-"""news-image-20261126 V13 (broken-stroke $ only):
+"""news-image-20261126 V14 (two fact rewords + kicker dedupe):
 one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
+
+V14 changes (see work/v14/AUDIT-V14.md and work/v14/FACTCHECK-V14.md):
+two wire facts reworded — IPL "REGISTRATIONS FOR 2027" ->
+"1,220 REGISTER FOR 2027", and Davis Cup "QUARTER-FINAL TONIGHT" ->
+"TIE 1-1, DOUBLES DECIDE" (verified: Norrie beat Struff 6-3 3-6 6-2,
+Fery lost 6-3 6-2 to Zverev, tie 1-1, Reuters + The Times) — and the
+storm feature kicker deduped ("NEW YORK" -> "EAST COAST"). Full-size
+wire-all 160/257 (62%, V13 152/253), 300px wire 14/257 (V13 13/253),
+300px large 10/28 (tie) — all reproduced exactly on a fresh re-run.
+Honest accounting: the IPL gain is cross-talk (220/OFF/53 now read;
+the reworded fact itself reads no better than the old one), while the
+Davis Cup gain is direct (TIE/1/1/DOUBLES/DECIDE all read, plus
+BRITAIN/GERMANY). Wire pitch 34 -> 33 tested and REJECTED (126/253,
+catastrophic — rows merge in OCR segmentation). Evening sweep: Europa
+League and NFL not started; EU Council deadlocked, no conclusions;
+Davis Cup decider still to play — re-check after ~02:00 WIB Fri
+27 Nov. No glyph work: the typeface is at its measured ceiling.
 
 V13 changes (see work/v13/AUDIT-V13.md and work/v13/FACTCHECK-V13.md):
 the 5x7 typeface's $ loses its middle vertical stroke (sheet L1 ties
@@ -295,7 +312,7 @@ FEATURES = [
      ["KIM JONG UN ORDERS", "TACTICAL NUKES", "WIDER, KCNA SAYS"]),
     ("BALLOON", "NEW YORK", "MACY'S PARADE MOVED",
      ["100TH PARADE", "POSTPONED BY STORM", "MOVED TO SAT"]),
-    ("STORM", "NEW YORK", "STORM HITS 250M",
+    ("STORM", "EAST COAST", "STORM HITS 250M",
      ["60 MPH GUSTS", "250M IN PATH", "HEAVY RAIN, WIND"]),
     ("STARS", "BRUSSELS", "EU MEETS ON UKRAINE",
      ["LEADERS GATHER", "THU-FRI ON BUDGET", "AND 2027 AID"]),
@@ -333,10 +350,10 @@ WIRE = [
     ("SPORT", "BEARS AT LIONS, 1PM ET", "BOTH 8-2, NFC NORTH LEAD"),
     ("SPORT", "EAGLES AT COWBOYS 4:30", "THANKSGIVING GAME TWO"),
     ("SPORT", "CHIEFS AT BILLS 8:20PM", "MAHOMES VS ALLEN"),
-    ("SPORT", "IPL AUCTION DRAWS 1,220", "REGISTRATIONS FOR 2027"),
+    ("SPORT", "IPL AUCTION DRAWS 1,220", "1,220 REGISTER FOR 2027"),  # V14: IPL fact reword
     ("SPORT", "SOORYAVANSHI 204 OFF 53", "AGAINST UAE IN CRICKET"),
     ("SPORT", "GUKESH FACES SINDAROV", "WORLD CHESS CROWN, GENEVA"),
-    ("SPORT", "BRITAIN V GERMANY, DAVIS", "QUARTER-FINAL TONIGHT"),
+    ("SPORT", "BRITAIN V GERMANY, DAVIS", "TIE 1-1, DOUBLES DECIDE"),  # V14: Davis Cup partial result (verified)
 ]
 
 
