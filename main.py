@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
-"""news-image-20261126 V9 (Q+R+S on the V8 base: drop the "THE WIRE"
-label + backing, brighter storm cloud, brighter skyline): one image
-summing up Thursday 26 November 2026.
+"""news-image-20261126 V10 (G2 + footer nudge on the V9 base: taller
+skyline with down-arrows seated on the rooflines, footer +2px): one
+image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
+
+V10 changes (see work/v10/AUDIT-V10.md and work/v10/FACTCHECK-V10.md):
+the chart-panel dead band is gone — the skyline is +14px taller (V8's
+B, now in a small combination) and each red down-arrow's tip sits
+exactly on the roofline beneath it instead of floating 6-10px above
+it; the footer rule/text move +2px (wire-to-footer gap 4px -> 6px).
+No rail/feature/wire row moves; no wire text; no text-pair change.
+The sheet battery's two new mechanisms both failed (HALO fringe
+31/254, catastrophic; dim facts cost nothing, 232/254 vs 230 baseline
+noise) — no typeface change. Evening sweep: nothing had landed at
+build time (~16:25 WIB) — BoE report due 17:30 WIB, Europa League
+and NFL overnight, EU Council conclusions Friday.
 
 V9 changes (see work/v9/AUDIT-V9.md and work/v9/FACTCHECK-V9.md):
 the "THE WIRE" label + navy backing is dropped (its backing ate 5px
@@ -434,9 +446,11 @@ def build():
     # (+8px) so the silhouette actually reads; windows 3x3, arrows
     # 12 wide. Panel bottom edge is y=384.
     base = 382
-    sky = [(12, 28), (36, 18), (58, 30), (84, 20), (106, 28), (130, 16),
-           (152, 26), (176, 18), (198, 30), (224, 20), (246, 28),
-           (270, 18), (292, 26), (314, 16)]
+    # V10 G2: B (skyline +14px, V8's B) + arrow tips seated exactly
+    # on the new rooflines beneath each tip.
+    sky = [(12, 42), (36, 32), (58, 44), (84, 34), (106, 42), (130, 30),
+           (152, 40), (176, 32), (198, 44), (224, 34), (246, 42),
+           (270, 32), (292, 40), (314, 30)]
     for bx, bh in sky:
         im.rect(px + bx, base - bh, 20, bh, SKY)
         im.rect(px + bx + 8, base - bh - 4, 4, 4, SKY)
@@ -444,9 +458,9 @@ def build():
         im.rect(px + wx, base - 8, 3, 3, GOLD)
     for wx in (30, 76, 122, 170, 216, 262, 310):
         im.rect(px + wx, base - 17, 3, 3, GOLD)
-    for ax in (46, 140, 234):
-        im.tri(px + ax, base - 38, px + ax + 12, base - 38,
-               px + ax + 6, base - 26, RED)
+    for ax, top, tip in ((46, 338, 350), (140, 340, 352), (234, 336, 348)):
+        im.tri(px + ax, top, px + ax + 12, top,
+               px + ax + 6, tip, RED)
 
     # Rail: Tube strike.
     im.rect(0, 396, W, 64, RED_DK)
@@ -507,9 +521,9 @@ def build():
             im.text(cx + 14, ry + 17, fact, CREAM_DIM, 2)
             ry += 34
 
-    # Footer.
-    im.hline(0, 998, W, GREY)
-    im.text_c(0, 1006, W, "THE WORLD'S NEWS - MAKE.FUN/?ref=nnk13219", GOLD, 2)
+    # Footer. V10 X10: rule/text +2px (wire-to-footer gap 4px -> 6px).
+    im.hline(0, 1000, W, GREY)
+    im.text_c(0, 1008, W, "THE WORLD'S NEWS - MAKE.FUN/?ref=nnk13219", GOLD, 2)
 
     return im
 
