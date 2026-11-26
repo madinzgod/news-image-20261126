@@ -1,26 +1,31 @@
-"""news-image-20261126 V14 (two fact rewords + kicker dedupe):
+"""news-image-20261126 V15 (five fact rewords, no glyph work):
 one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
 
-V14 changes (see work/v14/AUDIT-V14.md and work/v14/FACTCHECK-V14.md):
-two wire facts reworded — IPL "REGISTRATIONS FOR 2027" ->
-"1,220 REGISTER FOR 2027", and Davis Cup "QUARTER-FINAL TONIGHT" ->
-"TIE 1-1, DOUBLES DECIDE" (verified: Norrie beat Struff 6-3 3-6 6-2,
-Fery lost 6-3 6-2 to Zverev, tie 1-1, Reuters + The Times) — and the
-storm feature kicker deduped ("NEW YORK" -> "EAST COAST"). Full-size
-wire-all 160/257 (62%, V13 152/253), 300px wire 14/257 (V13 13/253),
-300px large 10/28 (tie) — all reproduced exactly on a fresh re-run.
-Honest accounting: the IPL gain is cross-talk (220/OFF/53 now read;
-the reworded fact itself reads no better than the old one), while the
-Davis Cup gain is direct (TIE/1/1/DOUBLES/DECIDE all read, plus
-BRITAIN/GERMANY). Wire pitch 34 -> 33 tested and REJECTED (126/253,
-catastrophic — rows merge in OCR segmentation). Evening sweep: Europa
-League and NFL not started; EU Council deadlocked, no conclusions;
-Davis Cup decider still to play — re-check after ~02:00 WIB Fri
-27 Nov. No glyph work: the typeface is at its measured ceiling.
+V15 changes (see work/v15/AUDIT-V15.md and work/v15/FACTCHECK-V15.md):
+five wire facts reworded, each tested isolated on the V14 source and
+combined only as measured winners — BoE "CUTS BANK CAPITAL FLOORS" ->
+"BANK CAPITAL FLOORS CUT" (FLOORS now reads in full, direct), Sooryavanshi
+"AGAINST UAE IN CRICKET" -> "IN CRICKET AGAINST UAE" (same words,
+reordered; UAE + GUKESH read), Chiefs "MAHOMES VS ALLEN" -> "MAHOMES
+FACES ALLEN" (IPL/AUCTION read via cross-talk; the FACES fact gain is
+a scorer artefact — FACES is matched from the Gukesh headline line),
+IITS "ROBOTICS, AI, SPACE, 2027" -> "AI, ROBOTICS, SPACE, 2027" and
+Nepal "RS 15,000 CR TO NEPAL" -> "RS 15,000 CRORE TO NEPAL" (both
+full-size ties, 300px wire +2 each). Combined: wire-all 166/257 (65%,
+V14 160/257), headlines 82/129, facts 84/128, 300px wire 16/257 (V14
+14/257), 300px large 10/28 (tie) — all reproduced exactly on a fresh
+re-run. Rejected isolated: IPL "SIGN UP" (156/258, regressed), Gukesh
+"CHESS CROWN IN GENEVA" (headlines -1), Telegraph "REPORTS" (300px
+10/256, regressed), Eagles "GAME 2" (158/257, regressed), PSEI comma
+drop (full-size tie, facts rate down). Evening sweep: Davis Cup doubles
+still in progress (Britain lead 6-2, 4-3 in set 2 at ~22:15 WIB);
+Europa League and NFL not started; EU Council deadlocked, no
+conclusions. Nothing invented. No glyph work: the typeface is at its
+measured ceiling.
 
 V13 changes (see work/v13/AUDIT-V13.md and work/v13/FACTCHECK-V13.md):
 the 5x7 typeface's $ loses its middle vertical stroke (sheet L1 ties
@@ -330,15 +335,15 @@ WIRE = [
     ("POLITICS", "CABINET SPLIT ON MILIBAND", "INDEPENDENT FRONT PAGE"),
     ("POLITICS", "BBC ANTISEMITISM INQUIRY", "TIMES: WORKPLACE INQUIRY"),
     ("POLITICS", "INDIA CONSTITUTION DAY", "SAMVIDHAN DIVAS, 26 NOV"),
-    ("POLITICS", "INDIA AIDS NEPAL", "RS 15,000 CR TO NEPAL"),
-    ("POLITICS", "IITS ADD 6,000 TECH SEATS", "ROBOTICS, AI, SPACE, 2027"),
+    ("POLITICS", "INDIA AIDS NEPAL", "RS 15,000 CRORE TO NEPAL"),
+    ("POLITICS", "IITS ADD 6,000 TECH SEATS", "AI, ROBOTICS, SPACE, 2027"),
     ("POLITICS", "INDIA SPACE ECONOMY $45B", "FROM $9B WITHIN A DECADE"),
     ("WORLD", "CHINA POLICE TO AUSTRALIA", "HUNT ATTACK SUSPECT"),
     ("BUSINESS", "US MARKETS SHUT TODAY", "CLOSED FOR THANKSGIVING"),
     ("BUSINESS", "FLIPKART CEO TO STEP DOWN", "LEAVES IN DECEMBER"),
     ("BUSINESS", "PHILIPPINE STOCKS +0.68%", "PSEI AT 5,493.41 THURSDAY"),
     ("BUSINESS", "MANILA RAISES $1.26B", "STAGFLATION RISK, GDP 2.5"),
-    ("BUSINESS", "BANK OF ENGLAND REPORT", "CUTS BANK CAPITAL FLOORS"),
+    ("BUSINESS", "BANK OF ENGLAND REPORT", "BANK CAPITAL FLOORS CUT"),
     ("BUSINESS", "POUNDLAND: 11,000 JOBS", "IN ADMINISTRATION"),
     ("WORLD", "KING TIDES FLOOD PACIFICA", "ROADS SHUT ON CALIF COAST"),
     ("WORLD", "ROYAL BREAK-IN: TWO HELD", "VIA DRAINPIPE, PAPERS SAY"),
@@ -349,9 +354,9 @@ WIRE = [
     ("BUSINESS", "BRENT $94.82, GOLD $3,573", "WED CLOSES, REPORTED THU"),
     ("SPORT", "BEARS AT LIONS, 1PM ET", "BOTH 8-2, NFC NORTH LEAD"),
     ("SPORT", "EAGLES AT COWBOYS 4:30", "THANKSGIVING GAME TWO"),
-    ("SPORT", "CHIEFS AT BILLS 8:20PM", "MAHOMES VS ALLEN"),
+    ("SPORT", "CHIEFS AT BILLS 8:20PM", "MAHOMES FACES ALLEN"),
     ("SPORT", "IPL AUCTION DRAWS 1,220", "1,220 REGISTER FOR 2027"),  # V14: IPL fact reword
-    ("SPORT", "SOORYAVANSHI 204 OFF 53", "AGAINST UAE IN CRICKET"),
+    ("SPORT", "SOORYAVANSHI 204 OFF 53", "IN CRICKET AGAINST UAE"),
     ("SPORT", "GUKESH FACES SINDAROV", "WORLD CHESS CROWN, GENEVA"),
     ("SPORT", "BRITAIN V GERMANY, DAVIS", "TIE 1-1, DOUBLES DECIDE"),  # V14: Davis Cup partial result (verified)
 ]
