@@ -1,23 +1,24 @@
-"""news-image-20261126 V11 (redrawn K/M/R/B/V glyphs + stars dots r4):
+"""news-image-20261126 V12 (narrow 0 + BoE fact update):
 one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
 
-V11 changes (see work/v11/AUDIT-V11.md and work/v11/FACTCHECK-V11.md):
-the 5x7 typeface's five confusable glyphs are redrawn (K, M, R, B, V)
-— the first sheet-battery win since V6: sheet 234/254 (vs 230
-baseline), and on the page the full-size wire-all reaches 142/254
-(top of the 139-142 band) with the 300px wire gate moving 7 -> 11
-(reproduced exactly on a fresh re-run). Selective bold (diagonal
-glyphs single-strike) was tested on the sheet and REJECTED (220/254).
-Feature-4's EU stars dots grow r3 -> r4 (scene occupancy 3.0% ->
-5.0%), gate-neutral. No rail/feature/wire row moves; no wire text;
-no text-pair change. Evening sweep: nothing had landed at build
-time (~17:45 WIB) — BoE's own page still "to be published at
-10.30am" and no wire outlet has published the FSR findings; Europa
-League and NFL kick off overnight, EU Council conclusions Friday.
+V12 changes (see work/v12/AUDIT-V12.md and work/v12/FACTCHECK-V12.md):
+the 5x7 typeface's 0 loses its slash and becomes a NARROWER oval than O
+(sheet H2: 242/254 vs the 234 baseline — the second sheet win in a row,
+all gains attributable to the 0; the I/Q/$ redraws in sheet H cost
+words and were dropped, and selective-wide J scored 210/254 and was
+rejected). On the page the full-size wire-all reaches 151/253 (60%,
+V11 142/254), 300px wire 13/253 (V11 11/254), 300px large 10/28 (V11
+9/28) — all reproduced exactly on a fresh re-run. The Bank of England
+Financial Stability Report landed 10:30 GMT (verified from the Bank's
+own FPC Record + official post, corroborated by Financial News), so
+the wire fact "STABILITY REPORT 10:30 UK" becomes the verified
+finding "CUTS BANK CAPITAL FLOORS". No rail/feature/wire row moves;
+no text-pair change. Evening sweep: Europa League and NFL kick off
+overnight, EU Council conclusions Friday — nothing invented.
 
 V10 changes (see work/v10/AUDIT-V10.md and work/v10/FACTCHECK-V10.md):
 the chart-panel dead band is gone — the skyline is +14px taller (V8's
@@ -85,7 +86,7 @@ F = {
     'X': (0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11),
     'Y': (0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04),
     'Z': (0x1F, 0x01, 0x02, 0x04, 0x08, 0x10, 0x1F),
-    '0': (0x0E, 0x11, 0x13, 0x15, 0x19, 0x11, 0x0E),
+    '0': (0x06, 0x09, 0x09, 0x09, 0x09, 0x09, 0x06),  # V12 H2: narrow oval, no slash
     '1': (0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E),
     '2': (0x0E, 0x11, 0x01, 0x06, 0x08, 0x10, 0x1F),
     '3': (0x1F, 0x02, 0x04, 0x02, 0x01, 0x11, 0x0E),
@@ -305,7 +306,7 @@ WIRE = [
     ("BUSINESS", "FLIPKART CEO TO STEP DOWN", "LEAVES IN DECEMBER"),
     ("BUSINESS", "PHILIPPINE STOCKS +0.68%", "PSEI AT 5,493.41 THURSDAY"),
     ("BUSINESS", "MANILA RAISES $1.26B", "STAGFLATION RISK, GDP 2.5"),
-    ("BUSINESS", "BANK OF ENGLAND REPORT", "STABILITY REPORT 10:30 UK"),
+    ("BUSINESS", "BANK OF ENGLAND REPORT", "CUTS BANK CAPITAL FLOORS"),
     ("BUSINESS", "POUNDLAND: 11,000 JOBS", "IN ADMINISTRATION"),
     ("WORLD", "KING TIDES FLOOD PACIFICA", "ROADS SHUT ON CALIF COAST"),
     ("WORLD", "ROYAL BREAK-IN: TWO HELD", "VIA DRAINPIPE, PAPERS SAY"),
