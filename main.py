@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""news-image-20261126 V2: one image summing up Thursday 26 November 2026.
+"""news-image-20261126 V3: one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
@@ -12,15 +12,24 @@ parade / nor'easter / EU summit), three-column wire of 31 briefs,
 footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
 writer.
 
-V2 changes (see work/v2/AUDIT-V2.md; every change measured first):
-- V1 glyphs KEPT: redrawn glyphs scored 74% vs 86% baseline on the
-  OCR sheet, tracking 70%, bold 74% — all falsified, none shipped.
-- Wire pitch 30 -> 34, fact dy 15 -> 17 (measured +5pts clean OCR:
-  3-col sheet 36% -> 41%). "THE WIRE" header dropped to fund the
-  vertical budget; hairline divider instead.
-- Features 150 -> 142px, scenes re-derived for a 40px box, bolder.
-- Chart panel: bars spacing 34 -> 32, skyline strip at the bottom,
-  duplicated "US MARKETS CLOSED TODAY" line removed (wire #20 has it).
+V3 changes (see work/v3/AUDIT-V3.md; every change measured first):
+- V1 glyphs KEPT: no font variant beat the 85% sheet baseline —
+  bold-on-baseline 71%, fringe-AA 40%, redrawn D/N 74%/84%, singles
+  K/R/B/M/6 all 85-86% (noise). The typeface stays.
+- Lead sub/body 2 -> 3 (rewrapped to 35 chars, pitch 25, head at
+  y148): fills the lead dead space; 300px wire OCR 3% -> 6%.
+- Rail head 3 -> 4: "LONDON ... STRIKE FROM" now reads at 300px.
+- Masthead/date scale-ups (6/4) REVERTED: the large-text sheet
+  promised 28% -> 64%, but on the real page the date line vanished
+  from the 300px transcript at both scales (tesseract segmentation,
+  not legibility); page-level large text tied V2 at 32% either way,
+  so the V2 scales stay.
+- BoE wire fact corrected 21:30 -> 10:30 UK (Bank of England primary
+  source: FSR published 10:30am).
+- "THE WIRE" label cut into the divider rule at zero vertical cost.
+- Skyline buildings brightened (10,20,36) -> (32,58,92) + 2nd window
+  row. Evening sweep: nothing had landed (Europa League/NFL/BoE/EU
+  Council all Thu evening) — nothing added.
 """
 
 import os
@@ -285,7 +294,7 @@ WIRE = [
     ("BUSINESS", "FLIPKART CEO TO STEP DOWN", "LEAVES IN DECEMBER"),
     ("BUSINESS", "PHILIPPINE STOCKS +0.68%", "PSEI AT 5,493.41 THURSDAY"),
     ("BUSINESS", "MANILA RAISES $1.26B", "STAGFLATION RISK, GDP 2.5"),
-    ("BUSINESS", "BANK OF ENGLAND REPORT", "STABILITY REPORT 21:30 UK"),
+    ("BUSINESS", "BANK OF ENGLAND REPORT", "STABILITY REPORT 10:30 UK"),
     ("BUSINESS", "POUNDLAND: 11,000 JOBS", "IN ADMINISTRATION"),
     ("WORLD", "KING TIDES FLOOD PACIFICA", "ROADS SHUT ON CALIF COAST"),
     ("WORLD", "ROYAL BREAK-IN: TWO HELD", "VIA DRAINPIPE, PAPERS SAY"),
@@ -373,15 +382,15 @@ def build():
 
     # Lead.
     lx, lw = 16, 636
-    im.text(lx, 140, LEAD_HEAD, CREAM, 4)
-    y = 140 + 7 * 4 + 12
-    for ln in wrap(LEAD_SUB, 52):
-        im.text(lx, y, ln, GOLD, 2)
-        y += 18
+    im.text(lx, 148, LEAD_HEAD, CREAM, 4)
+    y = 148 + 7 * 4 + 12
+    for ln in wrap(LEAD_SUB, 35):
+        im.text(lx, y, ln, GOLD, 3)
+        y += 25
     y += 6
-    for ln in wrap(LEAD_BODY, 52):
-        im.text(lx, y, ln, CREAM_DIM, 2)
-        y += 18
+    for ln in wrap(LEAD_BODY, 35):
+        im.text(lx, y, ln, CREAM_DIM, 3)
+        y += 25
     # Chart panel.
     px, pw = 668, 340
     im.rect(px, 132, pw, 252, NAVY2)
@@ -404,18 +413,20 @@ def build():
            (152, 18), (176, 12), (198, 22), (224, 14), (246, 20),
            (270, 12), (292, 18), (314, 10)]
     for bx, bh in sky:
-        im.rect(px + bx, base - bh, 20, bh, (10, 20, 36))
-        im.rect(px + bx + 8, base - bh - 4, 4, 4, (10, 20, 36))
+        im.rect(px + bx, base - bh, 20, bh, (32, 58, 92))
+        im.rect(px + bx + 8, base - bh - 4, 4, 4, (32, 58, 92))
     for wx in (20, 66, 112, 160, 206, 252, 300):
         im.rect(px + wx, base - 8, 2, 3, GOLD)
+    for wx in (30, 76, 122, 170, 216, 262, 310):
+        im.rect(px + wx, base - 17, 2, 3, GOLD)
     for ax in (46, 140, 234):
         im.tri(px + ax, base - 30, px + ax + 8, base - 30,
                px + ax + 4, base - 22, RED)
 
     # Rail: Tube strike.
     im.rect(0, 396, W, 64, RED_DK)
-    im.text(16, 408, RAIL_HEAD, CREAM, 3)
-    im.text(16, 434, RAIL_BODY, CREAM, 2)
+    im.text(16, 404, RAIL_HEAD, CREAM, 4)
+    im.text(16, 436, RAIL_BODY, CREAM, 2)
 
     # Features. Height 142 (was 150): funds the pitch-34 wire below.
     # Scene box 40px; headline at +64; body up to 3 lines ends +139.
@@ -436,9 +447,12 @@ def build():
         if i < 3:
             im.vline(fx + fw + gap // 2, fy + 8, 126, GREY)
 
-    # Wire divider (the "THE WIRE" header text was dropped to fund the
-    # pitch-34 rows; the chips mark the wire). Rows start 622.
+    # Wire divider with "THE WIRE" label cut into the rule at zero
+    # vertical cost: a navy backing rect breaks the hairline and the
+    # gold scale-1 caps sit on it. Rows start 622.
     im.hline(0, 617, W, GREY)
+    im.rect(478, 611, 68, 11, NAVY)
+    im.text_c(478, 613, 68, "THE WIRE", GOLD, 1)
 
     # Wire: 3 columns, 11 / 10 / 10 rows, pitch 34, fact at +17.
     # Lines are capped at 25 chars (column text width) - assert so a
