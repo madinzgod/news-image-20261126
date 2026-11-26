@@ -1,9 +1,24 @@
-"""news-image-20261126 V12 (narrow 0 + BoE fact update):
+"""news-image-20261126 V13 (broken-stroke $ only):
 one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
+
+V13 changes (see work/v13/AUDIT-V13.md and work/v13/FACTCHECK-V13.md):
+the 5x7 typeface's $ loses its middle vertical stroke (sheet L1 ties
+the 242/253 baseline — but fixes 3 $ signs on the sheet, $45B/$1.26B/
+$3,573, which the word scorer cannot count since $/# are not word
+characters). On the page the full-size wire-all reaches 152/253 (60%,
+V12 151/253), 300px wire 13/253 (tie), 300px large 10/28 (tie) — all
+reproduced exactly on a fresh re-run. The +1 is one word (BRENT) on
+the line holding the redrawn $, i.e. segmentation cross-talk from 72
+changed pixels, NOT a direct $ read — stated plainly, this is the
+smallest possible promotion. The other V13 sheet mechanisms all
+failed: O pinched waist 173/253 (reads as 8), I mid-tick 179/253
+(reads as +/t), V sharp point 234/253 (reads as Y), Q late tail ties
+242/253. Evening sweep: nothing has landed (Europa League and NFL
+kick off overnight, EU Council Friday) — nothing invented.
 
 V12 changes (see work/v12/AUDIT-V12.md and work/v12/FACTCHECK-V12.md):
 the 5x7 typeface's 0 loses its slash and becomes a NARROWER oval than O
@@ -110,7 +125,7 @@ F = {
     '(': (0x02, 0x04, 0x08, 0x08, 0x08, 0x04, 0x02),
     ')': (0x08, 0x04, 0x02, 0x02, 0x02, 0x04, 0x08),
     '%': (0x19, 0x1A, 0x02, 0x04, 0x08, 0x0B, 0x13),
-    '$': (0x04, 0x0F, 0x14, 0x0E, 0x05, 0x1E, 0x04),
+    '$': (0x04, 0x0F, 0x10, 0x0E, 0x01, 0x1E, 0x04),  # V13 L1: broken vertical stroke
     '&': (0x0C, 0x12, 0x14, 0x08, 0x15, 0x12, 0x0D),
     '+': (0, 0x04, 0x04, 0x0E, 0x04, 0x04, 0),
     '=': (0, 0, 0x0E, 0, 0x0E, 0, 0),
