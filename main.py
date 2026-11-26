@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
-"""news-image-20261126 V8 (visual/structural: lead 6th line, taller skyline,
-bigger scenes, centred masthead, rail roundel, full dividers): one image
+"""news-image-20261126 V9 (Q+R+S on the V8 base: drop the "THE WIRE"
+label + backing, brighter storm cloud, brighter skyline): one image
 summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
 
-V8 changes (see work/v8/AUDIT-V8.md and work/v8/FACTCHECK-V8.md): the
-lead body gains a verified 6th line (Nikkei open 261 lower at 58,383,
-STORIES #16), filling the 31px dead strip; the skyline grows +14px to
-close the chart dead band with the red arrows re-anchored above the new
-rooflines; all four feature scenes grow inside their 52px box; the
-masthead title is vertically centred in its band (y18 -> y25); a Tube
-roundel fills the rail head row's empty right end; feature dividers run
-the full box height. No rail/feature/wire row moves; no wire text, no
-palette change. Evening sweep: nothing had landed at build time
-(~14:30 WIB) — BoE report due 17:30 WIB, Europa League and NFL
+V9 changes (see work/v9/AUDIT-V9.md and work/v9/FACTCHECK-V9.md):
+the "THE WIRE" label + navy backing is dropped (its backing ate 5px
+of two feature boxes and sat 0px above wire row 1, garbling it in
+OCR — removing it recovers SHUT / TODAY / THANKSGIVING); the storm
+cloud gets a dedicated brighter colour (170,180,195, 6.92:1 on
+NAVY2); the skyline buildings brighten to (72,110,160, 2.77:1).
+No rail/feature/wire row moves; no wire text; no text-pair change.
+The 5x7 typeface sheet battery (2D bold, vertical-only bold,
+BW2D, tall glyphs) all failed — the bold wire font is at its
+measured ceiling. Evening sweep: nothing had landed at build time
+(~15:40 WIB) — BoE report due 17:30 WIB, Europa League and NFL
 overnight, EU Council Friday.
 
 Design (authored fresh for this edition): dark navy broadsheet, cream
@@ -64,6 +65,8 @@ PURPLE = (192, 132, 252)   # science chip
 PAPER = (245, 241, 230)    # masthead background
 INK = (16, 30, 51)         # text on paper
 GREY = (120, 130, 145)     # hairlines
+STORM = (170, 180, 195)    # V9 R: storm cloud only (6.92:1 on NAVY2)
+SKY = (72, 110, 160)       # V9 S: skyline buildings (2.77:1 on NAVY2)
 
 # ---------------------------------------------------------------- 5x7 font
 # Each glyph: 7 rows, each a 5-bit int (bit 4 = leftmost pixel).
@@ -360,10 +363,10 @@ def scene_balloon(im, x, y, w, h):
 def scene_storm(im, x, y, w, h):
     # h = 52 box. Bigger cloud, longer lightning, lower rain.
     cx = x + w // 2
-    im.disc(cx - 13, y + 13, 14, GREY)
-    im.disc(cx + 9, y + 9, 15, GREY)
-    im.disc(cx + 21, y + 15, 10, GREY)
-    im.rect(cx - 29, y + 19, 58, 7, GREY)
+    im.disc(cx - 13, y + 13, 14, STORM)
+    im.disc(cx + 9, y + 9, 15, STORM)
+    im.disc(cx + 21, y + 15, 10, STORM)
+    im.rect(cx - 29, y + 19, 58, 7, STORM)
     im.line(cx + 2, y + 27, cx - 7, y + 36, GOLD)
     im.line(cx - 7, y + 36, cx + 3, y + 36, GOLD)
     im.line(cx + 3, y + 36, cx - 7, y + 48, GOLD)
@@ -435,8 +438,8 @@ def build():
            (152, 26), (176, 18), (198, 30), (224, 20), (246, 28),
            (270, 18), (292, 26), (314, 16)]
     for bx, bh in sky:
-        im.rect(px + bx, base - bh, 20, bh, (48, 80, 120))
-        im.rect(px + bx + 8, base - bh - 4, 4, 4, (48, 80, 120))
+        im.rect(px + bx, base - bh, 20, bh, SKY)
+        im.rect(px + bx + 8, base - bh - 4, 4, 4, SKY)
     for wx in (20, 66, 112, 160, 206, 252, 300):
         im.rect(px + wx, base - 8, 3, 3, GOLD)
     for wx in (30, 76, 122, 170, 216, 262, 310):
@@ -478,12 +481,11 @@ def build():
         if i < 3:
             im.vline(fx + fw + gap // 2, fy + 8, 134, GREY)
 
-    # Wire divider with "THE WIRE" label cut into the rule at zero
-    # vertical cost: a navy backing rect breaks the hairline and the
-    # gold scale-1 caps sit on it. Rows start 622.
+    # Wire divider: hairline only (V9 Q). The "THE WIRE" label + navy
+    # backing is dropped: its backing rect ate 5px of feature boxes 2
+    # and 3 (341 NAVY px, y611-616) and the 6px gap cannot hold an
+    # 11px label. Rows start 622.
     im.hline(0, 617, W, GREY)
-    im.rect(478, 611, 68, 11, NAVY)
-    im.text_c(478, 613, 68, "THE WIRE", GOLD, 1)
 
     # Wire: 3 columns, 11 / 10 / 10 rows, pitch 34, fact at +17.
     # V6c: bold ONLY here (isolation: does the 300px-wire drop of the
