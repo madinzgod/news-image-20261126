@@ -1,11 +1,23 @@
-#!/usr/bin/env python3
-"""news-image-20261126 V10 (G2 + footer nudge on the V9 base: taller
-skyline with down-arrows seated on the rooflines, footer +2px): one
-image summing up Thursday 26 November 2026.
+"""news-image-20261126 V11 (redrawn K/M/R/B/V glyphs + stars dots r4):
+one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
 $MAKEFUN_OUTPUT_DIR (default /output).
+
+V11 changes (see work/v11/AUDIT-V11.md and work/v11/FACTCHECK-V11.md):
+the 5x7 typeface's five confusable glyphs are redrawn (K, M, R, B, V)
+— the first sheet-battery win since V6: sheet 234/254 (vs 230
+baseline), and on the page the full-size wire-all reaches 142/254
+(top of the 139-142 band) with the 300px wire gate moving 7 -> 11
+(reproduced exactly on a fresh re-run). Selective bold (diagonal
+glyphs single-strike) was tested on the sheet and REJECTED (220/254).
+Feature-4's EU stars dots grow r3 -> r4 (scene occupancy 3.0% ->
+5.0%), gate-neutral. No rail/feature/wire row moves; no wire text;
+no text-pair change. Evening sweep: nothing had landed at build
+time (~17:45 WIB) — BoE's own page still "to be published at
+10.30am" and no wire outlet has published the FSR findings; Europa
+League and NFL kick off overnight, EU Council conclusions Friday.
 
 V10 changes (see work/v10/AUDIT-V10.md and work/v10/FACTCHECK-V10.md):
 the chart-panel dead band is gone — the skyline is +14px taller (V8's
@@ -17,43 +29,7 @@ The sheet battery's two new mechanisms both failed (HALO fringe
 31/254, catastrophic; dim facts cost nothing, 232/254 vs 230 baseline
 noise) — no typeface change. Evening sweep: nothing had landed at
 build time (~16:25 WIB) — BoE report due 17:30 WIB, Europa League
-and NFL overnight, EU Council conclusions Friday.
-
-V9 changes (see work/v9/AUDIT-V9.md and work/v9/FACTCHECK-V9.md):
-the "THE WIRE" label + navy backing is dropped (its backing ate 5px
-of two feature boxes and sat 0px above wire row 1, garbling it in
-OCR — removing it recovers SHUT / TODAY / THANKSGIVING); the storm
-cloud gets a dedicated brighter colour (170,180,195, 6.92:1 on
-NAVY2); the skyline buildings brighten to (72,110,160, 2.77:1).
-No rail/feature/wire row moves; no wire text; no text-pair change.
-The 5x7 typeface sheet battery (2D bold, vertical-only bold,
-BW2D, tall glyphs) all failed — the bold wire font is at its
-measured ceiling. Evening sweep: nothing had landed at build time
-(~15:40 WIB) — BoE report due 17:30 WIB, Europa League and NFL
-overnight, EU Council Friday.
-
-Design (authored fresh for this edition): dark navy broadsheet, cream
-masthead, lead = Thursday's Asia markets rout with a bar chart plus a
-skyline strip, rail = London Tube strike, four features (Kim / Macy's
-parade / nor'easter / EU summit), three-column wire of 31 briefs,
-footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
-writer.
-
-V5 changes (see work/v5/AUDIT-V5.md and work/v5/FACTCHECK-V5.md):
-- Skyline ONLY: buildings brighter (32,58,92) -> (48,80,120) and
-  taller (+8px), windows 2x3 -> 3x3, red down-arrows 8 -> 12 wide.
-  The V3 skyline was nearly invisible; the V5 strip reads as a city
-  silhouette. All measured gates tie V3 (full wire 114/254, 300px
-  wire 16/254, 300px large 8/28 — the one-word large delta is the
-  apostrophe "S" token, whose pixels are byte-identical).
-- Feature-row rebalance (bigger scenes, single-line heads, storm
-  third line) was built, measured, and REJECTED: full-size wire
-  +3 words but 300px wire -5 words (15 -> 10) — a real regression
-  on a tracked gate. See work/v5/FACTCHECK-V5.md; V6 may split it
-  (heads-only vs scenes-only).
-- Glyphs, masthead, date, lead, rail, wire UNCHANGED. No evening
-  sweep items: nothing had landed at build time (~11:30 WIB).
-"""
+and NFL overnight, EU Council conclusions Friday."""
 
 import os
 import struct
@@ -84,7 +60,7 @@ SKY = (72, 110, 160)       # V9 S: skyline buildings (2.77:1 on NAVY2)
 # Each glyph: 7 rows, each a 5-bit int (bit 4 = leftmost pixel).
 F = {
     'A': (0x0E, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
-    'B': (0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E),
+    'B': (0x1E, 0x11, 0x11, 0x1C, 0x11, 0x11, 0x1E),
     'C': (0x0E, 0x11, 0x10, 0x10, 0x10, 0x11, 0x0E),
     'D': (0x1E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1E),
     'E': (0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x1F),
@@ -93,18 +69,18 @@ F = {
     'H': (0x11, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11),
     'I': (0x0E, 0x04, 0x04, 0x04, 0x04, 0x04, 0x0E),
     'J': (0x07, 0x02, 0x02, 0x02, 0x02, 0x12, 0x0C),
-    'K': (0x11, 0x12, 0x14, 0x18, 0x14, 0x12, 0x11),
+    'K': (0x11, 0x12, 0x14, 0x18, 0x14, 0x12, 0x13),
     'L': (0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F),
-    'M': (0x11, 0x1B, 0x15, 0x15, 0x11, 0x11, 0x11),
+    'M': (0x11, 0x1B, 0x15, 0x15, 0x15, 0x11, 0x11),
     'N': (0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x11),
     'O': (0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
     'P': (0x1E, 0x11, 0x11, 0x1E, 0x10, 0x10, 0x10),
     'Q': (0x0E, 0x11, 0x11, 0x11, 0x15, 0x12, 0x0D),
-    'R': (0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x11),
+    'R': (0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x13),
     'S': (0x0F, 0x10, 0x10, 0x0E, 0x01, 0x01, 0x1E),
     'T': (0x1F, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04),
     'U': (0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E),
-    'V': (0x11, 0x11, 0x11, 0x11, 0x11, 0x0A, 0x04),
+    'V': (0x11, 0x11, 0x11, 0x11, 0x0A, 0x0A, 0x0E),
     'W': (0x11, 0x11, 0x11, 0x15, 0x15, 0x15, 0x0A),
     'X': (0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11),
     'Y': (0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04),
@@ -394,8 +370,8 @@ def scene_stars(im, x, y, w, h):
         a = math.pi * 2 * k / 12 - math.pi / 2
         sx = int(cx + r * math.cos(a))
         sy = int(cy + r * math.sin(a))
-        im.disc(sx, sy, 3, GOLD)
-    im.disc(cx, cy, 3, GOLD)
+        im.disc(sx, sy, 4, GOLD)
+    im.disc(cx, cy, 4, GOLD)
 
 
 SCENES = {"MISSILE": scene_missile, "BALLOON": scene_balloon,
