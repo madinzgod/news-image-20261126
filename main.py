@@ -1,3 +1,4 @@
+# P20d variant (V20): wire-only per-'2' advance + TIE-preserving Davis fact
 """news-image-20261126 V15 (five fact rewords, no glyph work):
 one image summing up Thursday 26 November 2026.
 
@@ -247,7 +248,7 @@ class Img:
             for x in range(lo, hi + 1):
                 self.set(x, y, c)
 
-    def text(self, x, y, s, c, scale):
+    def text(self, x, y, s, c, scale, adv2=False):
         # V6 BOLD: every set pixel is double-struck +1px to the right
         # (scale >= 2 only; at scale 1 the +1px would fuse adjacent
         # glyphs). Advance is unchanged, so no layout moves and no
@@ -255,7 +256,7 @@ class Img:
         # test: BOLD 230/254 (91%) vs baseline 217/254 (85%).
         s = s.upper()
         cx = x
-        for ch in s:
+        for i, ch in enumerate(s):
             g = F.get(ch, BLANK)
             for r in range(7):
                 bits = g[r]
@@ -267,6 +268,8 @@ class Img:
                             self.rect(cx + col * scale + 1, y + r * scale,
                                       scale, scale, c)
             cx += 6 * scale
+            if adv2 and ch == '2':
+                cx += scale  # P20: wire-only per-'2' extra advance
         return cx
 
     def text_c(self, x, y, w, s, c, scale):
@@ -358,7 +361,7 @@ WIRE = [
     ("SPORT", "IPL AUCTION DRAWS 1,220", "1,220 REGISTER FOR 2027"),  # V14: IPL fact reword
     ("SPORT", "SOORYAVANSHI 204 OFF 53", "IN CRICKET AGAINST UAE"),
     ("SPORT", "GUKESH FACES SINDAROV", "WORLD CHESS CROWN, GENEVA"),
-    ("SPORT", "BRITAIN V GERMANY, DAVIS", "TIE 1-1, DOUBLES DECIDE"),  # V14: Davis Cup partial result (verified)
+    ("SPORT", "BRITAIN V GERMANY, DAVIS", "TIE 2-1, DOUBLES DECIDE"),  # V14: Davis Cup partial result (verified)
 ]
 
 
@@ -531,8 +534,8 @@ def build():
         ry = 622
         for beat, head, fact in col:
             im.rect(cx, ry + 3, 8, 8, CHIP[beat])
-            im.text(cx + 14, ry, head, CREAM, 2)
-            im.text(cx + 14, ry + 17, fact, CREAM_DIM, 2)
+            im.text(cx + 14, ry, head, CREAM, 2, adv2=True)
+            im.text(cx + 14, ry + 17, fact, CREAM_DIM, 2, adv2=True)
             ry += 34
 
     # Footer. V10 X10: rule/text +2px (wire-to-footer gap 4px -> 6px).
