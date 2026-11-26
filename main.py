@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""news-image-20261126 V3: one image summing up Thursday 26 November 2026.
+"""news-image-20261126 V5: one image summing up Thursday 26 November 2026.
 
 Python 3.13, standard library only. No network, no time, no randomness:
 the same bytes come out of every run. Writes entry.png into
@@ -12,24 +12,20 @@ parade / nor'easter / EU summit), three-column wire of 31 briefs,
 footer with the make.fun ref. Own 5x7 pixel typeface as data; own PNG
 writer.
 
-V3 changes (see work/v3/AUDIT-V3.md; every change measured first):
-- V1 glyphs KEPT: no font variant beat the 85% sheet baseline —
-  bold-on-baseline 71%, fringe-AA 40%, redrawn D/N 74%/84%, singles
-  K/R/B/M/6 all 85-86% (noise). The typeface stays.
-- Lead sub/body 2 -> 3 (rewrapped to 35 chars, pitch 25, head at
-  y148): fills the lead dead space; 300px wire OCR 3% -> 6%.
-- Rail head 3 -> 4: "LONDON ... STRIKE FROM" now reads at 300px.
-- Masthead/date scale-ups (6/4) REVERTED: the large-text sheet
-  promised 28% -> 64%, but on the real page the date line vanished
-  from the 300px transcript at both scales (tesseract segmentation,
-  not legibility); page-level large text tied V2 at 32% either way,
-  so the V2 scales stay.
-- BoE wire fact corrected 21:30 -> 10:30 UK (Bank of England primary
-  source: FSR published 10:30am).
-- "THE WIRE" label cut into the divider rule at zero vertical cost.
-- Skyline buildings brightened (10,20,36) -> (32,58,92) + 2nd window
-  row. Evening sweep: nothing had landed (Europa League/NFL/BoE/EU
-  Council all Thu evening) — nothing added.
+V5 changes (see work/v5/AUDIT-V5.md and work/v5/FACTCHECK-V5.md):
+- Skyline ONLY: buildings brighter (32,58,92) -> (48,80,120) and
+  taller (+8px), windows 2x3 -> 3x3, red down-arrows 8 -> 12 wide.
+  The V3 skyline was nearly invisible; the V5 strip reads as a city
+  silhouette. All measured gates tie V3 (full wire 114/254, 300px
+  wire 16/254, 300px large 8/28 — the one-word large delta is the
+  apostrophe "S" token, whose pixels are byte-identical).
+- Feature-row rebalance (bigger scenes, single-line heads, storm
+  third line) was built, measured, and REJECTED: full-size wire
+  +3 words but 300px wire -5 words (15 -> 10) — a real regression
+  on a tracked gate. See work/v5/FACTCHECK-V5.md; V6 may split it
+  (heads-only vs scenes-only).
+- Glyphs, masthead, date, lead, rail, wire UNCHANGED. No evening
+  sweep items: nothing had landed at build time (~11:30 WIB).
 """
 
 import os
@@ -406,22 +402,23 @@ def build():
         im.text(bar_x + bar_w + 6, by, vtxt, CREAM, 2)
         by += 32
     # Skyline strip along the panel bottom: trading-city silhouette
-    # with red down-arrows (the "US MARKETS CLOSED" line moved out —
-    # wire #20 carries it). Panel bottom edge is y=384.
+    # with red down-arrows. V5: brighter (48,80,120) and taller
+    # (+8px) so the silhouette actually reads; windows 3x3, arrows
+    # 12 wide. Panel bottom edge is y=384.
     base = 382
-    sky = [(12, 20), (36, 12), (58, 22), (84, 14), (106, 20), (130, 10),
-           (152, 18), (176, 12), (198, 22), (224, 14), (246, 20),
-           (270, 12), (292, 18), (314, 10)]
+    sky = [(12, 28), (36, 18), (58, 30), (84, 20), (106, 28), (130, 16),
+           (152, 26), (176, 18), (198, 30), (224, 20), (246, 28),
+           (270, 18), (292, 26), (314, 16)]
     for bx, bh in sky:
-        im.rect(px + bx, base - bh, 20, bh, (32, 58, 92))
-        im.rect(px + bx + 8, base - bh - 4, 4, 4, (32, 58, 92))
+        im.rect(px + bx, base - bh, 20, bh, (48, 80, 120))
+        im.rect(px + bx + 8, base - bh - 4, 4, 4, (48, 80, 120))
     for wx in (20, 66, 112, 160, 206, 252, 300):
-        im.rect(px + wx, base - 8, 2, 3, GOLD)
+        im.rect(px + wx, base - 8, 3, 3, GOLD)
     for wx in (30, 76, 122, 170, 216, 262, 310):
-        im.rect(px + wx, base - 17, 2, 3, GOLD)
+        im.rect(px + wx, base - 17, 3, 3, GOLD)
     for ax in (46, 140, 234):
-        im.tri(px + ax, base - 30, px + ax + 8, base - 30,
-               px + ax + 4, base - 22, RED)
+        im.tri(px + ax, base - 38, px + ax + 12, base - 38,
+               px + ax + 6, base - 26, RED)
 
     # Rail: Tube strike.
     im.rect(0, 396, W, 64, RED_DK)
